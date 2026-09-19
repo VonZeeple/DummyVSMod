@@ -1,0 +1,8 @@
+﻿bin/
+obj/
+*.csproj.user
+*.dll
+*.pdb
+_build/
+*.sln
+.vs/

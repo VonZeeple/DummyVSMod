@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VSEssentials">
+      <HintPath>$(VINTAGE_STORY)/Mods/VSEssentials.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VSSurvivalMod">
+      <HintPath>$(VINTAGE_STORY)/Mods/VSSurvivalMod.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>$(VINTAGE_STORY)/Lib/protobuf-net.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(VINTAGE_STORY)/Lib/Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <!--
+    <None Include="LICENSE" CopyToOutputDirectory="PreserveNewest"/>
+    -->
+    <None Include="assets/**">
+      <Link>assets/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(BaseIntermediateOutputPath)$(Configuration)/$(TargetFramework)/ModVersion.g.cs" />
+  </ItemGroup>
+
+  <Target Name="GenerateModVersion" BeforeTargets="CoreCompile">
+    <WriteLinesToFile
+      File="$(BaseIntermediateOutputPath)$(Configuration)/$(TargetFramework)/ModVersion.g.cs"
+      Lines="internal static class ModVersion { internal const string Value = &quot;$(Version)&quot;%3B }"
+      Overwrite="true" />
+  </Target>
+
+  <Target Name="GenerateModInfo" BeforeTargets="Package" Condition="'$(Configuration)' == 'Release'">
+    <MakeDir Directories="$(TargetDir)" />
+    <Exec Command="sed 's/@VERSION@/$(Version)/g' modinfo.json.in &gt; &quot;$(TargetDir)modinfo.json&quot;" />
+  </Target>
+
+  <Target Name="Package" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
+    <ZipDirectory DestinationFile="bin/$(TargetName)_v$(Version).zip" SourceDirectory="$(TargetDir)" Overwrite="true"/>
+  </Target>
+</Project>

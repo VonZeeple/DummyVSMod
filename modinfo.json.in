@@ -1,0 +1,15 @@
+{
+  "side": "Universal",
+  "RequiredOnClient": true,
+  "RequiredOnServer": true,
+  "type": "code",
+  "modid": "dummyvsmod",
+  "name": "Dummy VS Mod",
+  "authors": ["PFev"],
+  "description": "A mod that does nothing, just for test purpose.",
+  "website": "",
+  "version": "@VERSION@",
+  "dependencies": {
+    "game": "1.22.0"
+  }
+}
